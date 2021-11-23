@@ -108,8 +108,9 @@ func check_ping(i string, a []string) {
 		//fmt.Println("判断ip中: ", i, " ", c[0][0])
 	}
 	if ip[0] == ip[1] && ip[0] == ip[2] && ip[0] == ip[3] && ip[0] == ip[4] {
-		fmt.Printf("[+]no cdn: %s %20s\n", ip[0], i)
-	} else {
-		fmt.Printf("[-]have cdn: %s %20s\n", ip[0], i)
+		fmt.Printf("[+]no cdn: %-30s %10s\n", i, ip[0])
 	}
+	// } else {
+	// 	fmt.Printf("[-]have cdn: %-20s\n", i)
+	// }
 }
