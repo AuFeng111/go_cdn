@@ -4,4 +4,4 @@
 - 爬取的https://wepcc.com/ 上服务器的节点，进行多个ip的比较，如果ip相等证明无cdn
 - 代码可能存在bug，但是能用。后期会继续修改
 
-![Image text](https://raw.githubusercontent.com/AuFeng111/go_cdn/main/cdn.png)
+![Image text](https://github.com/AuFeng111/go_cdn/blob/main/cdn2.png)
