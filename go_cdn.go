@@ -32,9 +32,11 @@ func main() {
 		}
 		domains = append(domains, strings.TrimSpace(string(line)))
 	}
+
 	fmt.Println("已经获取以下域名: ")
 	fmt.Println(domains)
 	fmt.Println("开始探测: ")
+	fmt.Println("                      --create by aufeng")
 	a := make(chan string, len(domains))
 	for i := 0; i < 50; i++ {
 		go func() {
@@ -107,5 +109,7 @@ func check_ping(i string, a []string) {
 	}
 	if ip[0] == ip[1] && ip[0] == ip[2] && ip[0] == ip[3] && ip[0] == ip[4] {
 		fmt.Printf("[+]no cdn: %s %20s\n", ip[0], i)
+	} else {
+		fmt.Printf("[-]have cdn: %s %20s\n", ip[0], i)
 	}
 }
