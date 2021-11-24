@@ -32,13 +32,12 @@ func main() {
 		}
 		domains = append(domains, strings.TrimSpace(string(line)))
 	}
-
 	fmt.Println("已经获取以下域名: ")
 	fmt.Println(domains)
 	fmt.Println("开始探测: ")
 	fmt.Println("                      --create by aufeng")
 	a := make(chan string, len(domains))
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 100; i++ {
 		go func() {
 			for i := range a {
 				get_hash(i, &wg)
@@ -53,7 +52,7 @@ func main() {
 	wg.Wait()
 	close(a)
 }
-func get_hash(i string, wg *sync.WaitGroup) {
+func get_hash(i string, wg *sync.WaitGroup) { //获取服务器的hash
 	defer wg.Done()
 	//i := "ffbebbs.kingsoft.com"
 	resp, err := http.PostForm("https://www.wepcc.com/", url.Values{"host": {i}, "node": {"2,3,6"}})
@@ -86,7 +85,7 @@ func get_hash(i string, wg *sync.WaitGroup) {
 	check_ping(i, a)
 }
 
-func check_ping(i string, a []string) {
+func check_ping(i string, a []string) { //利用各地的服务器ip节点去进行ping，进行比较
 	var ip []string
 	for _, b := range a {
 		resp, err := http.PostForm("https://www.wepcc.com/check-ping.html", url.Values{"host": {i}, "node": {b}})
@@ -102,12 +101,24 @@ func check_ping(i string, a []string) {
 		}
 		//var data[] string
 		//fmt.Println(string(body))
-		//matched, err := regexp.MatchString("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}", string(body))
-		c := regexp.MustCompile("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}").FindAllStringSubmatch(string(body), -1)
-		ip = append(ip, c[0][0])
-		//fmt.Println("判断ip中: ", i, " ", c[0][0])
+		//c, err := regexp.MatchString("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}", string(body))
+		if strings.Index(string(body), "ipAddress") > 0 { //如果服务器报错，就不会存在ipAddress的字段
+			c := regexp.MustCompile("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}").FindAllStringSubmatch(string(body), -1)
+			ip = append(ip, c[0][0])
+		}
 	}
-	if ip[0] == ip[1] && ip[0] == ip[2] && ip[0] == ip[3] && ip[0] == ip[4] {
+	b := 0
+	if len(ip) > 0 { //ip长度大于0再进行比较
+		fmt.Print(len(ip), "   ", i)
+		for a := 1; a < len(ip); a++ {
+			if ip[0] == ip[a] {
+				b = 1
+			} else {
+				b = 0
+			}
+		}
+	}
+	if b == 1 {
 		fmt.Printf("[+]no cdn: %-30s %10s\n", i, ip[0])
 	}
 	// } else {
