@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -14,10 +15,25 @@ import (
 	"sync"
 )
 
+var file string
+var t int
+
+func init() {
+	flag.StringVar(&file, "file", "D:\\vscode\\python\\杂技\\webalive\\WebAliveScan-master\\target.txt", "")
+	flag.IntVar(&t, "t", 100, "thread")
+	flag.Usage = func() {
+		fmt.Printf("\nUsage: \n-file 1.txt")
+		flag.PrintDefaults() //输出flag
+	}
+	flag.Parse() //解析flag
+}
+
 func main() {
 	var wg sync.WaitGroup
 	var domains []string
-	file, err := os.Open("D:\\vscode\\python\\杂技\\webalive\\WebAliveScan-master\\target.txt")
+
+	//file, err := os.Open("D:\\vscode\\python\\杂技\\webalive\\WebAliveScan-master\\target.txt")
+	file, err := os.Open(file)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,10 +50,10 @@ func main() {
 	}
 	fmt.Println("已经获取以下域名: ")
 	fmt.Println(domains)
-	fmt.Println("开始探测: ")
 	fmt.Println("                      --create by aufeng")
+	fmt.Println("开始探测: ")
 	a := make(chan string, len(domains))
-	for i := 0; i < 100; i++ {
+	for i := 0; i < t; i++ {
 		go func() {
 			for i := range a {
 				get_hash(i, &wg)
@@ -107,14 +123,13 @@ func check_ping(i string, a []string) { //利用各地的服务器ip节点去进
 			ip = append(ip, c[0][0])
 		}
 	}
-	b := 0
+	b := 1
 	if len(ip) > 0 { //ip长度大于0再进行比较
-		fmt.Print(len(ip), "   ", i)
+		//fmt.Print(len(ip), "   ", i)
 		for a := 1; a < len(ip); a++ {
-			if ip[0] == ip[a] {
-				b = 1
-			} else {
+			if ip[0] != ip[a] {
 				b = 0
+				break
 			}
 		}
 	}
