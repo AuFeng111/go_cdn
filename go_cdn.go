@@ -22,7 +22,7 @@ func init() {
 	flag.StringVar(&file, "file", "D:\\vscode\\python\\杂技\\webalive\\WebAliveScan-master\\target.txt", "")
 	flag.IntVar(&t, "t", 100, "thread")
 	flag.Usage = func() {
-		fmt.Printf("\nUsage: \n-file 1.txt")
+		fmt.Printf("\nUsage: \n-file 1.txt \n-file 1.txt -t 200 \n\n")
 		flag.PrintDefaults() //输出flag
 	}
 	flag.Parse() //解析flag
@@ -132,9 +132,9 @@ func check_ping(i string, a []string) { //利用各地的服务器ip节点去进
 				break
 			}
 		}
-	}
-	if b == 1 {
-		fmt.Printf("[+]no cdn: %-30s %10s\n", i, ip[0])
+		if b == 1 {
+			fmt.Printf("[+]no cdn: %-30s %10s\n", i, ip[0])
+		}
 	}
 	// } else {
 	// 	fmt.Printf("[-]have cdn: %-20s\n", i)
